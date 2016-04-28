@@ -280,6 +280,33 @@ LV_EX_GetView(HLV) {
    Return Views[ErrorLevel]
 }
 ; ======================================================================================================================
+; LV_EX_GroupGetState - Get group states (requires Win Vista+ for most states).
+; ======================================================================================================================
+LV_EX_GroupGetState(HLV, GroupID, ByRef Collapsed := "", ByRef Collapsible := "", ByRef Focused := "", ByRef Hidden := ""
+                  , ByRef NoHeader := "", ByRef Normal := "", ByRef Selected := "") {
+   ; LVM_GETGROUPINFO = 0x1095 -> msdn.microsoft.com/en-us/library/bb774932(v=vs.85).aspx
+   Static OS := DllCall("GetVersion", "UChar")
+   Static LVGS5 := {Collapsed: 0x01, Hidden: 0x02, Normal: 0x00}
+   Static LVGS6 := {Collapsed: 0x01, Collapsible: 0x08, Focused: 0x10, Hidden: 0x02, NoHeader: 0x04, Normal: 0x00, Selected: 0x20}
+   Static LVGF := 0x04 ; LVGF_STATE
+   Static SizeOfLVGROUP := (4 * 6) + (A_PtrSize * 4)
+   Static OffStateMask := 8 + (A_PtrSize * 3) + 8
+   Static OffState := OffStateMask + 4
+   SetStates := 0
+   LVGS := OS > 5 ? LVGS6 : LVGS5
+   For Each, State In LVGS
+      SetStates |= State
+   VarSetCapacity(LVGROUP, SizeOfLVGROUP, 0)
+   NumPut(SizeOfLVGROUP, LVGROUP, 0, "UInt")
+   NumPut(LVGF, LVGROUP, 4, "UInt")
+   NumPut(SetStates, LVGROUP, OffStateMask, "UInt")
+   SendMessage, 0x1095, %GroupID%, &LVGROUP, , % "ahk_id " . HLV
+   States := NumGet(&LVGROUP, OffState, "UInt")
+   For Each, State in LVGS
+      %Each% := States & State ? True : False
+   Return ErrorLevel
+}
+; ======================================================================================================================
 ; LV_EX_GroupInsert - Inserts a group into a list-view control.
 ; ======================================================================================================================
 LV_EX_GroupInsert(HLV, GroupID, Header, Align := "", Index := -1) {
@@ -444,7 +471,7 @@ LV_EX_SetBkImage(HLV, ImgPath, Width := "", Height := "") {
          DllCall("User32.dll\GetClientRect", "Ptr", HLV, "Ptr", &RECT)
          Width := NumGet(RECT, 8, "Int"), Height := NumGet(RECT, 12, "Int")
       }
-      HMOD := 	DllCall("Kernel32.dll\LoadLibrary", "Str", "Gdiplus.dll", "UPtr")
+      HMOD := DllCall("Kernel32.dll\LoadLibrary", "Str", "Gdiplus.dll", "UPtr")
       VarSetCapacity(SI, 24, 0), NumPut(1, SI, "UInt")
       DllCall("Gdiplus.dll\GdiplusStartup", "PtrP", Token, "Ptr", &SI, "Ptr", 0)
       DllCall("Gdiplus.dll\GdipCreateBitmapFromFile", "WStr", ImgPath, "PtrP", Bitmap)
