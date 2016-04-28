@@ -281,6 +281,24 @@ LV_EX_GetView(HLV) {
    Return Views[ErrorLevel]
 }
 ; ======================================================================================================================
+; LV_EX_GroupGetHeader - Gets the header text of a group by group ID
+; ======================================================================================================================
+LV_EX_GroupGetHeader(HLV, GroupID, MaxChars := 1024) {
+   ; LVM_GETGROUPINFO = 0x1095
+   Static SizeOfLVGROUP := (4 * 6) + (A_PtrSize * 4)
+   Static LVGF_HEADER := 0x00000001
+   Static OffHeader := 8
+   Static OffHeaderMax := 8 + A_PtrSize
+   VarSetCapacity(HeaderText, MaxChars * 2, 0)
+   VarSetCapacity(LVGROUP, SizeOfLVGROUP, 0)
+   NumPut(SizeOfLVGROUP, LVGROUP, 0, "UInt")
+   NumPut(LVGF_HEADER, LVGROUP, 4, "UInt")
+   NumPut(&HeaderText, LVGROUP, OffHeader, "Ptr")
+   NumPut(MaxChars, LVGROUP, OffHeaderMax, "Int")
+   SendMessage, 0x1095, %GroupID%, % &LVGROUP, , % "ahk_id " . HLV
+   Return StrGet(&HeaderText, MaxChars, "UTF-16")
+}
+; ======================================================================================================================
 ; LV_EX_GroupGetState - Get group states (requires Win Vista+ for most states).
 ; ======================================================================================================================
 LV_EX_GroupGetState(HLV, GroupID, ByRef Collapsed := "", ByRef Collapsible := "", ByRef Focused := "", ByRef Hidden := ""

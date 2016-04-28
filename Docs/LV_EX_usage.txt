@@ -199,6 +199,14 @@ Retrieves the current view of a ListView.
 Returns:
    On success: The current view as one of the values defined in Views.
    On failure: ""
+======================================================================================================================
+LV_EX_GroupGetHeader(HLV, GroupID, MaxChars := 1024)
+======================================================================================================================
+Gets the header text of a group by group ID
+Params:
+   GroupID  -  unique integer group identifier.
+   MaxChars -  the maximum number of characters returned by the function.
+Returns:    Returns the group header text on success; otherwise an empty string.
 ========================================================================================================================
 LV_EX_GroupGetState(HLV, GroupID, ByRef Collapsed := "", ByRef Collapsible := "", ByRef Focused := ""
                   , ByRef Hidden := "", ByRef NoHeader := "", ByRef Normal := "", ByRef Selected := "")
