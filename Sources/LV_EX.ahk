@@ -4,6 +4,7 @@
 ; Tested with:    AHK 1.1.20.03 (A32/U32/U64)
 ; Tested on:      Win 8.1 (x64)
 ; Changelog:
+;     1.1.01.00/2016-04-28(just me     -  added LV_EX_GroupGetState contributed by Pulover.
 ;     1.1.00.00/2015-03-13/just me     -  added basic tile view support (suggested by toralf),
 ;                                         added basic (XP compatible) group view support,
 ;                                         revised code and made some minor changes.

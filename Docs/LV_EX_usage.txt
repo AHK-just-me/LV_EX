@@ -200,6 +200,15 @@ Returns:
    On success: The current view as one of the values defined in Views.
    On failure: ""
 ========================================================================================================================
+LV_EX_GroupGetState(HLV, GroupID, ByRef Collapsed := "", ByRef Collapsible := "", ByRef Focused := ""
+                  , ByRef Hidden := "", ByRef NoHeader := "", ByRef Normal := "", ByRef Selected := "")
+========================================================================================================================
+Get group states (requires Win Vista+ for most states).
+Params:
+   GroupID  -  unique integer group identifier.
+   Others   -  optional ByRef variables set to True if the associated state is currently set.
+Returns:    Returns True on success, otherwise False.
+========================================================================================================================
 LV_EX_GroupInsert(HLV, GroupID, Header, Align := "", Index := -1)
 ========================================================================================================================
 Inserts a group into a list-view control.
