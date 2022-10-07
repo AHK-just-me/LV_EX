@@ -10,8 +10,8 @@
       BkgImages.Insert(A_LoopFileFullPath)
    Rows := 20
    Gui, Margin, 20, 20
-   Gui, Add, Button, ym gOrder123, Order 1, 2, 3
-   Gui, Add, Button, ym gOrder321, Order 3, 2, 1
+   Gui, Add, Button, ym gOrder123, Order 1, 2, 3, 4
+   Gui, Add, Button, ym gOrder321, Order 3, 2, 1, 4
    Gui, Add, Button, ym gRemoveImage, Remove BkImage
    Gui, Add, Button, ym gNewImage, New BkImage
    Gui, Add, Text, xm Section h20, First visible row:
@@ -40,19 +40,26 @@ Return
 ; ----------------------------------------------------------------------------------------------------------------------
 Order123:
    GuiControl, -ReDraw, %HLV%
-   LV_EX_SetColumnOrder(HLV, [1, 2, 3])
+   ColArr := []
+   Loop, % LV_GetCount("Col")
+      ColArr[A_Index] := A_Index
+   LV_EX_SetColumnOrder(HLV, ColArr)
    ColArr := LV_EX_GetColumnOrder(HLV)
-   For Each, I In ColArr
-      LV_ModifyCol(I, "AutoHdr")
+   For Each, C In ColArr
+      LV_ModifyCol(C, "AutoHdr")
    GuiControl, +ReDraw, %HLV%
 Return
 ; ----------------------------------------------------------------------------------------------------------------------
 Order321:
    GuiControl, -ReDraw, %HLV%
-   LV_EX_SetColumnOrder(HLV, [3, 2, 1])
+   ColArr := [3, 2, 1]
+   Loop, % LV_GetCount("Col")
+      If (A_Index > 3)
+         ColArr[A_Index] := A_Index
+   LV_EX_SetColumnOrder(HLV, ColArr)
    ColArr := LV_EX_GetColumnOrder(HLV)
-   For Each, I In ColArr
-      LV_ModifyCol(I, "AutoHdr")
+   For Each, C In ColArr
+      LV_ModifyCol(C, "AutoHdr")
    GuiControl, +ReDraw, %HLV%
 Return
 ; ----------------------------------------------------------------------------------------------------------------------
